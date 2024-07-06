@@ -1,0 +1,531 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lesson 07 - Probability - a quick introduction to Bayesian reasoning &#8212; HEADS BAYES v0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
+
+    <script src="_static/documentation_options.js?v=d3792fb7"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'lesson07';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <header>
+  
+    <div class="bd-header navbar navbar-expand-lg bd-navbar">
+    </div>
+  
+  </header>
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">HEADS BAYES v0.1 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lesson01.html">Lesson 01 - Bayesian Statistical Inference - Theoretical foundations of Bayesian inference</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/lesson07.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lesson 07 - Probability - a quick introduction to Bayesian reasoning</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#incerteza">Incerteza</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verossimilhanca">Verossimilhança</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mbe">MBE</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#raciocinio-bayesiano">Raciocínio Bayesiano</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#probabilidade-bayesiana">Probabilidade Bayesiana</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#probabilidade-condicional-p-a-b">Probabilidade Condicional - P(A|B)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelo-de-conhecimentos-bayesianos">Modelo de Conhecimentos Bayesianos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#redes-bayesianas">Redes Bayesianas</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelo-quantitativo">Modelo Quantitativo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#representacao-do-conhecimento">Representação do Conhecimento</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluating-decision-support-methods">Evaluating Decision Support Methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#relembrando">Relembrando…</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#teorema-de-bayes">Teorema de Bayes</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="lesson-07-probability-a-quick-introduction-to-bayesian-reasoning">
+<h1>Lesson 07 - Probability - a quick introduction to Bayesian reasoning<a class="headerlink" href="#lesson-07-probability-a-quick-introduction-to-bayesian-reasoning" title="Link to this heading">#</a></h1>
+<section id="incerteza">
+<h2>Incerteza<a class="headerlink" href="#incerteza" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Mesmo não podendo ter a certeza de nada, posso ter uma ideia da verosimilhança de um evento.</p></li>
+</ul>
+</section>
+<section id="verossimilhanca">
+<h2>Verossimilhança<a class="headerlink" href="#verossimilhanca" title="Link to this heading">#</a></h2>
+</section>
+<section id="mbe">
+<h2>MBE<a class="headerlink" href="#mbe" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Uso consciente, explícito e criterioso da melhor evidência disponível para a tomada de decisão clínica. Isso inclui:</p>
+<ul>
+<li><p>Experiência clínica pessoal</p></li>
+<li><p>Melhor evidência clínica externa com base em investigação clínica de qualidade</p></li>
+<li><p>Valores, necessidades, expectativas e contexto individual de cada doente</p></li>
+</ul>
+</li>
+<li><p>É necessário representar a incerteza!</p>
+<ul>
+<li><p>A probabilidade é muitas vezes a melhor forma</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="raciocinio-bayesiano">
+<h2>Raciocínio Bayesiano<a class="headerlink" href="#raciocinio-bayesiano" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Definição</strong>: Processo formal que utilizamos para atualizar as nossas crenças sobre o mundo assim que obtemos alguns dados observados. (Kurt, 2019)</p></li>
+</ul>
+</section>
+<section id="probabilidade-bayesiana">
+<h2>Probabilidade Bayesiana<a class="headerlink" href="#probabilidade-bayesiana" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Computa a probabilidade de que a hipótese é verdadeira, atualizando a probabilidade a priori sobre a hipótese com base em novos dados.</p>
+<ul>
+<li><p><strong>Probabilidade a priori</strong>: Probabilidade de que a hipótese é verdadeira antes de uma experiência aleatória</p></li>
+<li><p><strong>Probabilidade a posteriori</strong>: Probabilidade de que a hipótese é verdadeira depois de uma experiência aleatória</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="probabilidade-condicional-p-a-b">
+<h2>Probabilidade Condicional - P(A|B)<a class="headerlink" href="#probabilidade-condicional-p-a-b" title="Link to this heading">#</a></h2>
+<p>[ P(A|B) =
+rac{P(A \cap B)}{P(B)} ]</p>
+</section>
+<section id="modelo-de-conhecimentos-bayesianos">
+<h2>Modelo de Conhecimentos Bayesianos<a class="headerlink" href="#modelo-de-conhecimentos-bayesianos" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Os métodos estatísticos Bayesianos permitem que se utilize conhecimento prévio quando se analisam os dados, transformando o processo de análise de dados num processo de atualização do conhecimento prévio com evidência biomédica de cuidados de saúde. (Peter Lucas, 2004)</p></li>
+</ul>
+</section>
+<section id="redes-bayesianas">
+<h2>Redes Bayesianas<a class="headerlink" href="#redes-bayesianas" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>É necessário ter em consideração as dependências entre os fatores; é diferente pensar na probabilidade de uma doença dado que está presente um sintoma ou dado que está presente um fator de risco.</p></li>
+</ul>
+</section>
+<section id="modelo-quantitativo">
+<h2>Modelo Quantitativo<a class="headerlink" href="#modelo-quantitativo" title="Link to this heading">#</a></h2>
+<p>[ P(	ext{Disease}|	ext{Symptom}) ]
+[ P(	ext{Disease}|	ext{Risk Factor}) ]</p>
+</section>
+<section id="representacao-do-conhecimento">
+<h2>Representação do Conhecimento<a class="headerlink" href="#representacao-do-conhecimento" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Redes Bayesianas representadas em grafo onde:</p>
+<ul>
+<li><p>Os atributos são representados pelos nós do grafo</p></li>
+<li><p>Os arcos representam as dependências entre os atributos, utilizando probabilidades condicionais</p></li>
+</ul>
+</li>
+<li><p>Aproxima-se à forma de pensar “natural”</p></li>
+</ul>
+</section>
+<section id="evaluating-decision-support-methods">
+<h2>Evaluating Decision Support Methods<a class="headerlink" href="#evaluating-decision-support-methods" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Sensibilidade</strong> = Recall</p></li>
+<li><p><strong>Valor preditivo positivo</strong> = Precision</p></li>
+</ul>
+</section>
+<section id="relembrando">
+<h2>Relembrando…<a class="headerlink" href="#relembrando" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Sensibilidade</strong> (= Recall) -&gt; P(T+ | D+)</p></li>
+<li><p><strong>Especificidade</strong> -&gt; P(T- | D-)</p></li>
+<li><p><strong>Valor preditivo positivo</strong> -&gt; P(D+ | T+)</p></li>
+<li><p><strong>Valor preditivo negativo</strong> -&gt; P(D- | T-)</p></li>
+<li><p><strong>Likelihood Ratio</strong> + -&gt; S / (1-E) = (1)</p></li>
+<li><p><strong>Likelihood Ratio</strong> - -&gt; (1-S) / E = (2)
+[ LR+ =
+rac{P(T+ | D+)}{P(T+)} ]</p></li>
+</ul>
+</section>
+<section id="teorema-de-bayes">
+<h2>Teorema de Bayes<a class="headerlink" href="#teorema-de-bayes" title="Link to this heading">#</a></h2>
+<p>[ P(A|B) =
+rac{P(A) 	imes P(B|A)}{P(B)} ]</p>
+<ul class="simple">
+<li><p>Sensibilidade</p></li>
+<li><p>Probabilidade de ter um “teste positivo”</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#incerteza">Incerteza</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verossimilhanca">Verossimilhança</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mbe">MBE</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#raciocinio-bayesiano">Raciocínio Bayesiano</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#probabilidade-bayesiana">Probabilidade Bayesiana</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#probabilidade-condicional-p-a-b">Probabilidade Condicional - P(A|B)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelo-de-conhecimentos-bayesianos">Modelo de Conhecimentos Bayesianos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#redes-bayesianas">Redes Bayesianas</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelo-quantitativo">Modelo Quantitativo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#representacao-do-conhecimento">Representação do Conhecimento</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluating-decision-support-methods">Evaluating Decision Support Methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#relembrando">Relembrando…</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#teorema-de-bayes">Teorema de Bayes</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Mariana Canelas-Pais
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Mariana Canelas-Pais.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,577 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lesson 09 - Probabilistic principles - The core engine of Bayesian networks &#8212; HEADS BAYES v0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
+
+    <script src="_static/documentation_options.js?v=d3792fb7"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'lesson09';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <header>
+  
+    <div class="bd-header navbar navbar-expand-lg bd-navbar">
+    </div>
+  
+  </header>
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">HEADS BAYES v0.1 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lesson01.html">Lesson 01 - Bayesian Statistical Inference - Theoretical foundations of Bayesian inference</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/lesson09.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lesson 09 - Probabilistic principles - The core engine of Bayesian networks</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#porque-utilizam-redes-bayesianas">Porque utilizam Redes Bayesianas?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nota-8">Nota 8</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nota-abreviada">Nota abreviada</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugacao">Conjugação:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#templates">Templates:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exemplos">Exemplos:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#para-binarias">Para binárias:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribuicao-de-probabilidade-conjunta">Distribuição de Probabilidade Conjunta</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#marginalizacao">Marginalização</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regra-da-cadeia-chain-rule-derivation">Regra da cadeia (Chain rule, derivation)</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="lesson-09-probabilistic-principles-the-core-engine-of-bayesian-networks">
+<h1>Lesson 09 - Probabilistic principles - The core engine of Bayesian networks<a class="headerlink" href="#lesson-09-probabilistic-principles-the-core-engine-of-bayesian-networks" title="Link to this heading">#</a></h1>
+<section id="porque-utilizam-redes-bayesianas">
+<h2>Porque utilizam Redes Bayesianas?<a class="headerlink" href="#porque-utilizam-redes-bayesianas" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>São modelos probabilísticos gráficos, pelo que são os formalismos de incerteza mais populares porque:</p>
+<ul>
+<li><p>Conseguem lidar com ruído, informação em falta (missing) e relação probabilística.</p></li>
+<li><p>Aprendem com os dados e conseguem incorporar conhecimento de domínio.</p></li>
+<li><p>Oferecem flexibilidade de pensamento/razoamento.</p></li>
+<li><p>Apresentam uma interface de representação gráfica compacta.</p></li>
+<li><p>Assentam em princípios probabilísticos.</p></li>
+<li><p>Aceitam princípios de engenharia: aquisição de conhecimento, machine learning e estatística.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="nota-8">
+<h2>Nota 8<a class="headerlink" href="#nota-8" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Variável estocástica (= estatística = random) -&gt; letra maiúscula ou string maiúscula (ex: X ou FEVER)</p></li>
+<li><p>Valores -&gt; as variáveis podem assumir valores (ex: X=x; FEVER=yes)</p></li>
+<li><p>Variáveis binárias -&gt; podem assumir 2 valores</p></li>
+<li><p>Variáveis discretas -&gt; podem assumir um de um conjunto finito de valores (ex: TEMP ∈ {low, medium, high})</p></li>
+<li><p>Variáveis contínuas -&gt; podem assumir qualquer valor num intervalo ou intervalo de valores reais (ex: TEMP ∈ [-50, 50])</p></li>
+</ul>
+</section>
+<section id="nota-abreviada">
+<h2>Nota abreviada<a class="headerlink" href="#nota-abreviada" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Variáveis binárias: X=true -&gt; x; X=false -&gt; x</p></li>
+<li><p>Variáveis não binárias: X=x -&gt; x, CITY=tokyo -&gt; tokyo (se não for ambíguo!)</p></li>
+<li><p>Conjuntos de variáveis análogas:
+X_1=x_1
+X_2=x_2
+…
+X_n=x_n
+-&gt; X = (X_1, X_2, …, X_n)
+-&gt; x = (x_1, x_2, …, x_n)</p></li>
+</ul>
+<section id="conjugacao">
+<h3>Conjugação:<a class="headerlink" href="#conjugacao" title="Link to this heading">#</a></h3>
+<p>(X=x) ∧ (Y=y) -&gt; (X=x, Y=y)</p>
+</section>
+<section id="templates">
+<h3>Templates:<a class="headerlink" href="#templates" title="Link to this heading">#</a></h3>
+<p>(X,Y) &lt;- ∀_x,y (X=x, Y=y)</p>
+</section>
+<section id="exemplos">
+<h3>Exemplos:<a class="headerlink" href="#exemplos" title="Link to this heading">#</a></h3>
+<p>P(X=x, Y=y) &lt;=&gt; P(X=x ∧ Y=y)
+P(X,Y) &lt;=&gt; P(X=x, Y=y) ∀_x,y</p>
+</section>
+<section id="para-binarias">
+<h3>Para binárias:<a class="headerlink" href="#para-binarias" title="Link to this heading">#</a></h3>
+<p>∑ P(X) = P(x) + P(¬x)</p>
+</section>
+</section>
+<section id="distribuicao-de-probabilidade-conjunta">
+<h2>Distribuição de Probabilidade Conjunta<a class="headerlink" href="#distribuicao-de-probabilidade-conjunta" title="Link to this heading">#</a></h2>
+<p>Sejam ( X ) e ( Y ) variáveis aleatórias com domínios</p>
+<p>[dom(X) = {x_1, x_2, \ldots, x_n}]</p>
+<p>[dom(Y) = {y_1, y_2, \ldots, y_m}]</p>
+<p>O conjunto produto</p>
+<p>[dom(X) \times dom(Y)]</p>
+<p>é transformado em um espaço de probabilidade definindo</p>
+<p>[P(X = x_i, Y = y_j)]</p>
+<p>onde ( P ) é uma distribuição de probabilidade conjunta de ( X ) e ( Y ).</p>
+<p>Aqui, estamos a definir as variáveis aleatórias ( X ) e ( Y ) com seus respectivos domínios, que são os conjuntos de todos os possíveis valores que essas variáveis podem assumir. O conjunto produto ( dom(X) \times dom(Y) ) representa todas as combinações possíveis dos valores de ( X ) e ( Y ). Para transformar esse conjunto em um espaço de probabilidade, definimos uma função de probabilidade conjunta ( P(X = x_i, Y = y_j) ), que fornece a probabilidade de ( X ) e ( Y ) assumirem valores específicos simultaneamente.</p>
+</section>
+<section id="marginalizacao">
+<h2>Marginalização<a class="headerlink" href="#marginalizacao" title="Link to this heading">#</a></h2>
+<p>Suponha que a distribuição de probabilidade conjunta de duas variáveis ( X ) e ( Y ) é dada; então</p>
+<p>[
+P(x) = P(X = x) = P(x \land \top)
+]
+[
+= P(x \land (y \lor \neg y))
+]
+[
+= P((x \land y) \lor (x \land \neg y))
+]</p>
+<p>Como</p>
+<p>[
+P(a \lor b) = P(a) + P(b), \text{se} \ a \land b = \bot
+]</p>
+<p>[
+= P(x \land y) + P(x \land \neg y)
+]</p>
+<p>A distribuição de probabilidade marginal de ( X ) é</p>
+<p>[
+P(x) = \sum_Y P(x, Y)
+]</p>
+<p>Neste contexto, a marginalização refere-se ao processo de encontrar a distribuição de probabilidade de uma variável ao somar (ou integrar) sobre as possíveis valores de outra variável. Aqui, começamos com a distribuição de probabilidade conjunta de ( X ) e ( Y ) e mostramos que a probabilidade marginal de ( X ), ( P(X=x) ), pode ser encontrada somando todas as probabilidades conjuntas ( P(X=x, Y=y) ) para todos os valores possíveis de ( Y ). Isto é feito utilizando a regra da soma das probabilidades para eventos mutuamente exclusivos.</p>
+<ul class="simple">
+<li><p>Se eu tenho a distribuição de probabilidade conjunta (e, portanto, a distribuição de todas as combinações possíveis), eu posso calcular uma determinada probabilidade marginal à custa de todas as combinações possíveis das outras variáveis.</p></li>
+<li><p>Ou seja, o que queremos fazer quando vamos marginalizar é calcular a probabilidade de uma variável em particular tomar um determinado valor qualquer que seja o valor das restantes variáveis.</p></li>
+</ul>
+</section>
+<section id="regra-da-cadeia-chain-rule-derivation">
+<h2>Regra da cadeia (Chain rule, derivation)<a class="headerlink" href="#regra-da-cadeia-chain-rule-derivation" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Para calcular esta probabilidade conjunta (com todos os valores possíveis para cada variável), ter que saber todas as probabilidades, quando o número de variáveis começa a ser muito grande, torna-se muito difícil. É aqui que surge a regra da cadeia.</p></li>
+</ul>
+<p>Da definição de <strong>probabilidade condicional</strong>…</p>
+<p>[
+P(A|B) = \frac{P(A, B)}{P(B)}
+]</p>
+<p>[
+P(X_1 | X_2, \ldots, X_n) = \frac{P(X_1, X_2, \ldots, X_n)}{P(X_2, \ldots, X_n)}
+]</p>
+<p>[
+\Rightarrow P(X_1, X_2, \ldots, X_n) = P(X_1 | X_2, \ldots, X_n) P(X_2, \ldots, X_n)
+]</p>
+<p>[
+P(X_2, \ldots, X_n) = P(X_2 | X_3, \ldots, X_n) P(X_3, \ldots, X_n)
+]</p>
+<p>[
+\vdots
+]</p>
+<p>[
+P(X_{n-1}, X_n) = P(X_{n-1} | X_n) P(X_n)
+]</p>
+<p>[
+P(X_n) = P(X_n)
+]</p>
+<p>[
+P(X_1, X_2, \ldots, X_n) = P(X_1 | X_2, \ldots, X_n) \cdot P(X_2 | X_3, \ldots, X_n) \cdot P(X_3 | X_4, \ldots, X_n) \cdot \ldots \cdot P(X_{n-1} | X_n) P(X_n)
+]</p>
+<p>[
+= \prod_{i=1}^{n-1} P(X_i | X_{i+1}, \ldots, X_n) P(X_n)
+]</p>
+<p>Uma <strong>rede Bayesiana</strong> é um par ((G, P)), onde:</p>
+<ul class="simple">
+<li><p>(G = (V(G), A(G))) é um grafo direcionado acíclico, com</p>
+<ul>
+<li><p>(V(G) = {v_1, v_2, \ldots, v_n}), um conjunto de vértices</p></li>
+<li><p>(A(G) \subseteq V(G) \times V(G)), um conjunto de arcos</p></li>
+</ul>
+</li>
+<li><p>(P: V(G) \to [0, 1]) é uma distribuição de probabilidade conjunta:</p></li>
+</ul>
+<p>[
+P(V(G)) = \prod_{i=1}^{n} P(v_i | \pi_G(v_i))
+]</p>
+<p>onde (\pi_G(v_i)) denota o conjunto de ancestrais imediatos (pais) do vértice (v_i) em (G).</p>
+<ul class="simple">
+<li><p>A probabilidade condicional é a probabilidade de um evento ocorrer dado que outro evento já ocorreu. A fórmula básica é (P(A|B) = \frac{P(A, B)}{P(B)}), onde (P(A, B)) é a probabilidade conjunta dos eventos (A) e (B), e (P(B)) é a probabilidade do evento (B).</p></li>
+<li><p>Nas redes Bayesianas, utilizamos a probabilidade condicional para definir a relação entre as variáveis. A rede Bayesiana é um grafo direcionado acíclico que representa um conjunto de variáveis e suas relações condicionais. Cada vértice no grafo representa uma variável, e os arcos direcionados entre os vértices indicam dependências condicionais.</p></li>
+<li><p>A distribuição de probabilidade conjunta de todas as variáveis na rede pode ser decomposta em um produto de probabilidades condicionais, utilizando a regra da cadeia (chain rule). Isto é útil para simplificar o cálculo das probabilidades conjuntas em sistemas complexos com muitas variáveis, facilitando a inferência e a aprendizagem de padrões a partir dos dados.</p></li>
+<li><p>A fórmula final para a probabilidade conjunta de todas as variáveis (X_1, X_2, \ldots, X_n) é um produto das probabilidades condicionais de cada variável, dado as suas variáveis parentais na rede.</p></li>
+<li><p>Quando algumas independências são declaradas entre as variáveis, a quantidade de informação necessária para calcular as probabilidades pode ser, então, reduzida. Em redes Bayesianas, isso é representado pela ausência de arcos diretos entre certos vértices, indicando que essas variáveis são independentes condicionalmente a outras variáveis. Por exemplo, se (X) e (Y) são independentes condicionalmente a (Z), então podemos escrever (P(X, Y | Z) = P(X | Z) P(Y | Z)).</p></li>
+<li><p>Essas independências permitem decompor a distribuição de probabilidade conjunta de uma maneira mais simples e eficiente. Em contraste, se todas as variáveis tivessem relações diretas entre si, não poderíamos simplificar a decomposição e precisaríamos conhecer a probabilidade conjunta completa de todas as combinações de variáveis, o que é impraticável para um grande número de variáveis.</p></li>
+<li><p>Portanto, o poder das redes Bayesianas reside na sua capacidade de representar e explorar essas independências condicionais, reduzindo a complexidade do problema de inferência de probabilidades em sistemas com muitas variáveis interrelacionadas.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#porque-utilizam-redes-bayesianas">Porque utilizam Redes Bayesianas?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nota-8">Nota 8</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nota-abreviada">Nota abreviada</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugacao">Conjugação:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#templates">Templates:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exemplos">Exemplos:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#para-binarias">Para binárias:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribuicao-de-probabilidade-conjunta">Distribuição de Probabilidade Conjunta</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#marginalizacao">Marginalização</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regra-da-cadeia-chain-rule-derivation">Regra da cadeia (Chain rule, derivation)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Mariana Canelas-Pais
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Mariana Canelas-Pais.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
